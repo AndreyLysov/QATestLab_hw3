@@ -3,12 +3,15 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.concurrent.TimeUnit;
+
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        WebDriver driver = getDriver();
+        EventFiringWebDriver driver = getConfiguredDriver();
         driver.get("http://prestashop-automation.qatestlab.com.ua/admin147ajyvk0/");
         driver.manage().window().maximize();
         driver.findElement(By.name("email")).sendKeys("webinar.test@gmail.com");
@@ -63,5 +66,12 @@ public class Main {
     public static WebDriver getDriver() {
         System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "/drivers/chromedriver.exe");
         return new ChromeDriver();
+    }
+
+    public static EventFiringWebDriver getConfiguredDriver() {
+        WebDriver driver = getDriver();
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        return new EventFiringWebDriver(driver).register(new EventHandler());
     }
 }
